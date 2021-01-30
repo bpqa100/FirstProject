@@ -3,8 +3,8 @@ package com.telran.ilcarro.qa26;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 import java.util.concurrent.TimeUnit;
 
@@ -14,16 +14,28 @@ public class TestBase {
     WebDriver webDr;
 
 
-    @BeforeMethod
+    @BeforeClass
     public void setUp() {
         webDr = new ChromeDriver();
         webDr.navigate().to("https://ilcarro-dev-v1.firebaseapp.com/");
         webDr.manage().window().maximize();
         webDr.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
     }
+    public void logIn() throws InterruptedException {
+        clickLoginButton();
+        type(By.name("email"), "hi2732@gmail.com");
+        type(By.name("password"), "Ab1234567");
+        pause();
+        clickYallaButton();
+
+    }
 
     public boolean isRegistrationFormPresent() {
-        return webDr.findElements(By.xpath("//h2[contains(.,'Registration')]")).size() > 0;
+        return isElementPresent(By.xpath("//h2[contains(.,'Registration')]"));
+    }
+
+    public boolean isElementPresent(By locator) {
+        return webDr.findElements(locator).size() > 0;
     }
 
     public void fillRegForm(String fName, String lName, String email, String password) {
@@ -65,8 +77,17 @@ public class TestBase {
         click(By.cssSelector("[href=\"/login\"]"));
     }
 
-    @AfterMethod
+    @AfterClass
     public void tearDown() {
         webDr.quit();
+    }
+
+    public void clickLogOutButton() {
+        webDr.findElement(By.xpath("//a[contains(., 'logOut')]")).click();
+    }
+
+    public boolean isUserLoggedIn() {
+        return isElementPresent(By.xpath("//a[contains(., 'logOut')]"));
+
     }
 }
